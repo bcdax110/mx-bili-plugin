@@ -4,11 +4,11 @@ import { NextFunction, Request, Response } from "express";
 import * as Fake from "./fake";
 import * as PlayUrl from "./play-url";
 
-const getServer = (port: number) => {
+const getServer = (port: number, cookie?: string) => {
   const app = express();
 
   app.use(Fake.Route, Fake.getProxy());
-  app.use(PlayUrl.Route, PlayUrl.getHandler(port));
+  app.use(PlayUrl.Route, PlayUrl.getHandler(port, cookie));
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
     res.status(500).send(err.message);

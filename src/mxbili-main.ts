@@ -1,3 +1,4 @@
+import axios from "axios";
 import getPort from "get-port";
 import { debounce, Notice, Plugin, Setting } from "obsidian";
 
@@ -11,10 +12,14 @@ export default class MxBili extends Plugin {
 
   fetchPoster = fetchBiliPoster;
 
-  setupProxy = (port: number): void => {
+  setupProxy = (port: number, sessdata?: string): void => {
     if (this.server) this.server.close().listen(port);
     else {
-      this.server = getServer(port);
+      if (sessdata) {
+        this.server = getServer(port, `SESSDATA=${sessdata}`);
+      } else {
+        this.server = getServer(port);
+      }
       this.server.on("error", (err) => {
         if (err.message.includes("EADDRINUSE"))
           new Notice("端口已被占用，请在Media Extended设置中更改端口号");
@@ -40,6 +45,14 @@ export default class MxBili extends Plugin {
     return newPort;
   };
 
+  setupSessdata = async (sessdata?: string): Promise<string | undefined> => {
+    if (this.settings.sessdata !== sessdata) {
+      this.settings.sessdata = sessdata;
+      await this.saveSettings();
+    }
+    return sessdata;
+  };
+
   async onload() {
     console.log("loading MxBili");
 
@@ -48,7 +61,8 @@ export default class MxBili extends Plugin {
     axios.defaults.adapter = "http";
 
     const newPort = await this.setupPort(this.settings.port);
-    this.setupProxy(newPort);
+    const sessdata = await this.setupSessdata(this.settings.sessdata);
+    this.setupProxy(newPort, sessdata);
   }
 
   onunload() {
@@ -74,7 +88,7 @@ export default class MxBili extends Plugin {
           async (value: string) => {
             const newPort = await this.setupPort(+value);
             if (newPort !== +value) text.setValue(newPort.toString());
-            this.setupProxy(newPort);
+            this.setupProxy(newPort, this.settings.sessdata);
           },
           500,
           true,
@@ -87,14 +101,51 @@ export default class MxBili extends Plugin {
               save(value);
           });
       });
+
+  sessdataSetting = (containerEl: HTMLElement) =>
+    new Setting(containerEl)
+      .setName("登录凭证")
+      .setDesc(
+        "获取视频高擎版本需要登录 bilibili 账号，在此处填写 Cookie 的 SESSDATA 值" +
+          "获取方法：" +
+          "1. 打开网页版 bilibili" +
+          "2.在浏览器中按下 F12 键打开浏览器的开发者工具" +
+          "3. 在 Application/Storage/Cookies 中找到含有 bilibili.com 的选项并选中" +
+          "4. 在右侧找到 Name 为 SESSDATA 的选项，将对应的 Vale 粘贴到此处",
+      )
+      .addText((text) => {
+        /*text.setPlaceholder("SESSDATA");
+        if (this.settings.sessdata) {
+          text.setValue(this.settings.sessdata);
+        }
+        text.onChange(async (value) => {
+          this.settings.sessdata = value;
+          await this.saveSettings();
+        });*/
+        const save = debounce(async (value: string) => {
+          const sessdata = await this.setupSessdata(value);
+          if (sessdata) {
+            text.setValue(sessdata);
+          }
+          this.setupProxy(this.settings.port, sessdata);
+        });
+        if (this.settings.sessdata) {
+          text.setValue(this.settings.sessdata.toString());
+        }
+        text.onChange(async (value: string) => {
+          save(value);
+        });
+      });
 }
 
 interface MxBiliSettings {
   port: number;
+  sessdata?: string;
 }
 
 const DEFAULT_SETTINGS: MxBiliSettings = {
   port: 2233,
+  sessdata: undefined,
 };
 
 const isVaildPort = (str: string) => {
