@@ -45,6 +45,8 @@ export default class MxBili extends Plugin {
 
     await this.loadSettings();
 
+    axios.defaults.adapter = "http";
+
     const newPort = await this.setupPort(this.settings.port);
     this.setupProxy(newPort);
   }

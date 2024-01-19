@@ -25,7 +25,7 @@ export default {
   external: ["obsidian"],
   plugins: [
     typescript(),
-    nodeResolve({ browser: true, preferBuiltins: true }),
+    nodeResolve({ browser: false, preferBuiltins: true }),
     commonjs(),
     json(),
     copy({

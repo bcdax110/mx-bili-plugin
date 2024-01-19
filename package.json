@@ -4,8 +4,8 @@
   "description": "Add advanced bilibili videos support for Media Extended plugin",
   "main": "main.js",
   "scripts": {
-    "dev": "sed -i '' \"s#return adapter;#return require('./adapters/http');#\" node_modules/axios/lib/defaults.js && rollup --config rollup.config.js -w",
-    "build": "sed -i '' \"s#return adapter;#return require('./adapters/http');#\" node_modules/axios/lib/defaults.js && rollup --config rollup.config.js",
+    "dev": "rollup --config rollup.config.js -w",
+    "build": "rollup --config rollup.config.js",
     "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|css)'",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "release": "release-it"
@@ -26,7 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "assert-never": "^1.2.1",
-    "axios": "^0.21.1",
+    "axios": "^1.6.5",
     "bili-api": "github:aidenlx/bili-api",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.31.0",
@@ -37,7 +37,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "express": "4.15.5",
     "get-port": "^5.1.1",
-    "http-proxy-middleware": "^2.0.1",
+    "http-proxy-middleware": "^2.0.6",
     "json": "^11.0.0",
     "obsidian": "^0.12.11",
     "prettier": "^2.3.2",
