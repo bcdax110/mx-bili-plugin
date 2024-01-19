@@ -1,6 +1,6 @@
 {
   "name": "mx-bili-plugin",
-  "version": "0.3.1",
+  "version": "0.4.0 - temp",
   "description": "Add advanced bilibili videos support for Media Extended plugin",
   "main": "main.js",
   "scripts": {

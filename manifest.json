@@ -1,7 +1,7 @@
 {
   "id": "mx-bili-plugin",
   "name": "Media Extended BiliBili Plugin",
-  "version": "0.3.1",
+  "version": "0.4.0 - temp",
   "minAppVersion": "0.12.2",
   "description": "Add advanced bilibili videos support for Media Extended plugin",
   "author": "AidenLx",
