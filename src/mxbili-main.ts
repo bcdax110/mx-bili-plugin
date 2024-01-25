@@ -106,22 +106,33 @@ export default class MxBili extends Plugin {
     new Setting(containerEl)
       .setName("登录凭证")
       .setDesc(
-        "获取视频高擎版本需要登录 bilibili 账号，在此处填写 Cookie 的 SESSDATA 值" +
-          "获取方法：" +
-          "1. 打开网页版 bilibili" +
-          "2.在浏览器中按下 F12 键打开浏览器的开发者工具" +
-          "3. 在 Application/Storage/Cookies 中找到含有 bilibili.com 的选项并选中" +
-          "4. 在右侧找到 Name 为 SESSDATA 的选项，将对应的 Vale 粘贴到此处",
+        createFragment((desc) => {
+          desc.appendText("获取视频高清版本需要登录 bilibili 账号");
+          desc.createEl("br");
+          desc.createEl("br");
+          desc.appendText("在此处填写 Cookie 的 SESSDATA 值");
+          desc.createEl("br");
+          desc.createEl("br");
+          desc.appendText("SESSDATA 值获取方法：");
+          desc.createEl("br");
+          desc.appendText("1. 打开");
+          desc.createEl("a", {
+            href: "https://www.bilibili.com/",
+            text: "网页版 bilibili",
+          });
+          desc.createEl("br");
+          desc.appendText("2. 在浏览器中按下 F12 键打开浏览器的开发者工具");
+          desc.createEl("br");
+          desc.appendText(
+            "3. 在 Application/Storage/Cookies 中找到含有 bilibili.com 的选项并选中",
+          );
+          desc.createEl("br");
+          desc.appendText(
+            "4. 在右侧找到 Name 为 SESSDATA 的选项，将对应的 Vale 粘贴到此处",
+          );
+        }),
       )
       .addText((text) => {
-        /*text.setPlaceholder("SESSDATA");
-        if (this.settings.sessdata) {
-          text.setValue(this.settings.sessdata);
-        }
-        text.onChange(async (value) => {
-          this.settings.sessdata = value;
-          await this.saveSettings();
-        });*/
         const save = debounce(async (value: string) => {
           const sessdata = await this.setupSessdata(value);
           if (sessdata) {
